@@ -2,154 +2,177 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Malla Interactiva Química Pura - Visual Completa</title>
+  <meta charset="UTF-8" />
+  <title>Malla Interactiva USM - Ingeniería Química</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #000;
-      color: #fff;
       margin: 0;
-      padding: 20px;
+      background: #000;
+      font-family: Arial, sans-serif;
+      color: white;
     }
     h1 {
       text-align: center;
-      margin-bottom: 30px;
+      padding: 20px;
     }
     .grid {
       display: grid;
-      grid-template-columns: repeat(10, 1fr);
-      gap: 10px;
-    }
-    .semestre-col {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 5px;
+      padding: 10px;
     }
     .materia {
-      background: #333;
-      border: 2px solid #fff;
-      border-radius: 5px;
-      padding: 8px;
       position: relative;
-      font-size: 12px;
-      line-height: 1.4;
+      background: #222;
+      border: 2px solid white;
+      border-radius: 8px;
+      padding: 6px;
+      font-size: 11px;
       cursor: pointer;
+      transition: 0.2s;
     }
     .materia.taken {
       text-decoration: line-through;
-      opacity: 0.6;
+      opacity: 0.4;
     }
     .materia.locked {
-      opacity: 0.3;
+      opacity: 0.2;
       pointer-events: none;
     }
-    .creditos {
+    .credito {
       position: absolute;
-      top: 4px;
-      right: 4px;
+      top: 2px;
+      right: 2px;
       background: #111;
       border-radius: 50%;
-      padding: 2px 6px;
+      width: 22px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-size: 10px;
-    }
-    .code {
-      font-weight: bold;
-      font-size: 11px;
+      border: 2px solid white;
     }
     .leyenda {
       display: flex;
       flex-wrap: wrap;
-      gap: 15px;
-      margin-top: 20px;
+      justify-content: center;
+      padding: 10px;
       font-size: 13px;
     }
     .leyenda span {
       display: flex;
       align-items: center;
-      gap: 5px;
+      margin: 0 10px;
     }
-    .leyenda .color-box {
-      width: 15px;
-      height: 15px;
+    .color {
+      width: 14px;
+      height: 14px;
+      margin-right: 5px;
       border-radius: 3px;
-      display: inline-block;
     }
     .footer {
-      margin-top: 20px;
-      font-size: 14px;
       text-align: center;
+      padding: 10px;
     }
-    .year-header {
+    .btn {
+      background: #444;
+      border: 1px solid white;
+      color: white;
+      padding: 6px 12px;
+      cursor: pointer;
+      border-radius: 6px;
+      margin-top: 10px;
+    }
+    .year-label {
       grid-column: span 2;
       text-align: center;
       font-weight: bold;
-      margin-bottom: 5px;
+      margin-top: 10px;
     }
   </style>
 </head>
 <body>
-  <h1>Malla Interactiva ICQ</h1>
-  <div class="grid" id="malla-grid"></div>
-
+  <h1>Malla Interactiva - Ingeniería Química</h1>
+  <div class="grid" id="grid"></div>
   <div class="leyenda" id="leyenda"></div>
-  <div class="footer" id="progreso"></div>
-
+  <div class="footer">
+    <div id="progreso"></div>
+    <button class="btn" onclick="resetMalla()">Limpiar ramos aprobados</button>
+  </div>
   <script>
-    const malla = {"s1": [["Introducci\u00f3n a las ciencias naturales", "ICN-116009C", "4", 0, "PC", [], ""], ["Introducci\u00f3n a la experimentaci\u00f3n cient\u00edfica", "IEC-106002C", "3", 0, "PC", [], ""], ["Matem\u00e1tica fundamental", "MF-111001C", "4", 0, "MAT", [], ""], ["Electiva del componente lenguaje (Parte 1 / Espa\u00f1ol)", "ELEC-ESP1", "2", 0, "ELE", [], ""], ["Electiva del componente Formaci\u00f3n social y ciudadana", "ELEC-SOC", "2", 0, "ELE", [], ""], ["Ingl\u00e9s I ", "ELEC-ENG", "2", "2", "ELE", [], ""]], "s2": [["Electiva del componente Estilos de vida saludable (deporte)", "ELEC-EVS", 2, 2, "Custom", [], ""], ["F\u00edsica fundamental I", "FF1-106001C", "4", "4", "FIS", ["ICN-116009C", "IEC-106002C", "CAL1-111013C"], ""], ["Biolog\u00eda general", "BIO-102052C", "4", "4", "PC", ["ICN-116009C", "IEC-106002C"], ""], ["C\u00e1lculo I\t", "CAL1-111013C", "3", "3", "MAT", ["MF-111001C"], ""], ["Qu\u00edmica general\t", "QG-116013C", "4", "4", "PC", [], ""], ["Ingl\u00e9s II", "ELEC-ENG2", "2", "2", "ELE", ["ELEC-ENG"], ""]], "s3": [["Experimentaci\u00f3n cient\u00edfica", "EXP-116003C", "2", "2", "PC", ["IEC-106002C", "QG-116013C", "QAN-116015C"], ""], ["Introducci\u00f3n al modelamiento matem\u00e1tico", "IMM-111002C", "3", "3", "MAT", ["CAL1-111013C", "FF1-106001C", "BIO-102052C", "QG-116013C"], ""], ["F\u00edsica II", "FF2-106008C", "4", "4", "FIS", ["FF1-106001C", "CAL1-111013C"], ""], ["C\u00e1lculo II", "CAL2-111014C", "3", "3", "MAT", ["CAL1-111013C"], ""], ["Qu\u00edmica anal\u00edtica", "QAN-116015C", "3", "3", "ANA", ["QG-116013C", "MF-111001C"], ""], ["Ingl\u00e9s III", "ELEC-ENG3", "2", "2", "ELE", ["ELEC-ENG2"], ""]], "s4": [["Estad\u00edstica qu\u00edmica", "ESTQ-116023C", "2", "2", "ANA", ["EXP-116003C", "QAN-116015C", "AI1-116018C"], ""], ["Laboratorio de qu\u00edmica anal\u00edtica", "LQA-116028C", "3", "3", "ANA", ["QAN-116015C", "EXP-116003C"], ""], ["An\u00e1lisis intrumental I", "AI1-116018C", "3", "3", "ANA", ["QAN-116015C", "EAE-116002C"], ""], ["F\u00edsica III", "FF3-106016C", "4", "4", "FIS", ["CAL2-111014C", "FF2-106008C"], ""], ["Matem\u00e1ticas especiales I", "ME1-111032C", "3", "3", "MAT", ["CAL2-111014C"], ""], ["Estructura at\u00f3mica y enlace", "EAE-116002C", "3", "3", "PC", ["CAL2-111014C", "FF2-106008C", "QG-116013C"], ""], ["Ingl\u00e9s IV", "ELEC-ENG4", "2", "2", "ELE", ["ELEC-ENG3"], ""]], "s5": [["Laboratorio de an\u00e1lisis instrumental", "LAI-116027C", "3", "3", "ANA", ["AI1-116018C", "AI2-116021C"], ""], ["An\u00e1lisis instrumental II", "AI2-116021C", "3", "3", "ANA", ["AI1-116018C", "FIQ1-116024C", "EAE-116002C"], ""], ["Qu\u00edmica inorg\u00e1nica I", "QI1-116031C", "3", "3", "INO", ["EAE-116002C"], ""], ["Qu\u00edmica org\u00e1nica I", "QO1-116039C", "3", "3", "ORG", ["EAE-116002C"], ""], ["Matem\u00e1ticas especiales II", "ME2-111036C", "3", "3", "MAT", ["ME1-111032C"], ""], ["Fisicoqu\u00edmica I", "FIQ1-116024C", "3", "3", "FIQ", ["EAE-116002C", "ME1-111032C", "FF3-106016C"], ""]], "s6": [["Electiva del componente lenguaje (Parte 2 / Espa\u00f1ol)", "ELEC-ESP2", "2", "2", "ELE", ["ELEC-ESP1"], ""], ["Laboratorio de qu\u00edmica inorg\u00e1nica I", "LI1-116029C", "2", "2", "INO", ["QI2-116032C", "LAI-116027C"], ""], ["Laboratorio de qu\u00edmica org\u00e1nica I", "LO1-116036C", "2", "2", "ORG", ["QO1-116039C", "LAI-116027C"], ""], ["Laboratorio de fisicoqu\u00edmica I", "LFQ1-116034C", "2", "2", "FIQ", ["FIQ1-116024C"], ""], ["Qu\u00edmica inorg\u00e1nica II", "QI2-116032C", "3", "3", "INO", ["QI1-116031C", "FIQ1-116024C"], ""], ["Qu\u00edmica org\u00e1nica II", "QO2-116040C", "3", "3", "ORG", ["QO1-116039C"], ""], ["Fisicoqu\u00edmica II", "FIQ2-116025C", "3", "3", "FIQ", ["ME2-111036C", "FIQ1-116024C"], ""]], "s7": [["Bioqu\u00edmica", "BIQ-116043C", "5", "5", "BIQ", ["FIQ2-116025C", "QO2-116040C", "LAI-116027C"], ""], ["Qu\u00edmica macromolecular", "QMA-116057C", "3", "3", "BIQ", ["QO2-116040C", "QI2-116032C"], ""], ["Seminario", "SEM-116055C", "1", "1", "PC", ["FIQ2-116025C", "QI2-116032C", "QO2-116040C"], ""], ["Laboratorio de fisicoqu\u00edmica II", "LFQ2-116035C", "2", "2", "FIQ", ["FIQ2-116025C", "LFQ1-116034C"], ""], ["Laboratorio de qu\u00edmica org\u00e1nica II", "LO2-116037C", "2", "2", "ORG", ["LAI-116027C", "LO1-116036C", "QO2-116040C"], ""], ["Laboratorio de qu\u00edmica inorg\u00e1nica II", "LI2-116030C", "2", "2", "INO", ["LAI-116027C", "LI1-116029C", "QI2-116032C"], ""], ["Optativa en qu\u00edmica I", "OPT-1", "3", "3", "OPQ", [], ""]], "s8": [["Electiva profesional II", "ELEC-PROF2", "3", "3", "ELE", [], ""], ["Electiva profesional I", "ELEC-PROF1", "3", "3", "ELE", [], ""], ["Electiva del componente Art\u00edstico-human\u00edstico", "ELEC-ART", "2", "2", "ELE", [], ""], ["Optativa en qu\u00edmica II", "OPT-2", "3", "3", "OPQ", [], ""], ["Qu\u00edmica verde y ambiental", "QVA-116054C", "3", "3", "BIQ", ["QO2-116040C", "QI2-116032C"], ""], ["Identificaci\u00f3n de compuestos", "IDC-116033C", "3", "3", "BIQ", ["QO2-116040C", "QI2-116032C", "AI2-116021C"], ""], ["Biolog\u00eda molecular", "BIOM-102116C", "3", "3", "BIQ", ["BIQ-116043C"], ""]], "s9": [["Trabajo de grado I", "TG1-116083M", "7", "7", "PC", ["BIOM-102116C", "IDC-116033C"], ""]], "s10": [["Trabajo de grado II", "TG2-116084M", "7", "7", "PC", ["TG1-116083M"], ""]]};
-    const categorias = {"PC": ["#949494", "Plan Com\u00fan"], "MAT": ["#0091ff", "Matem\u00e1ticas"], "ELE": ["#6b17e8", "Electivas"], "Custom": ["#000000", "Fuera de la malla | editado"], "FIS": ["#fffa61", "F\u00edsica"], "ANA": ["#eb9c2d", "Anal\u00edtca"], "INO": ["#fcce8d", "Inorg\u00e1nica"], "ORG": ["#8ded73", "Org\u00e1nica"], "FIQ": ["#86f1f3", "Fisicoqu\u00edmica"], "BIQ": ["#ea6df3", "Bioqu\u00edmica y complementos"], "OPQ": ["#abc71f", "Optativas"]};
-    const taken = new Set(JSON.parse(localStorage.getItem("takenCourses") || "[]"));
+    const colores = {
+      MAT: ['#00bfff', 'Matemáticas'],
+      FIS: ['#6c63ff', 'Física'],
+      QUI: ['#ff6666', 'Química'],
+      ING: ['#32cd32', 'Ingeniería Química'],
+      COM: ['#ffff00', 'Comunes'],
+      ELE: ['#c71585', 'Electivos'],
+      HUM: ['#b8860b', 'Humanistas'],
+      DEP: ['#2e8b57', 'Deportes'],
+    };
 
-    function createMateria(nombre, codigo, creditos, categoria, prereqs) {
-      const isTaken = taken.has(codigo);
-      const canTake = prereqs.every(p => taken.has(p));
+    const ramos = [
+      { codigo: 'MAT021', nombre: 'Matemáticas I', creditos: 7, color: 'MAT', col: 0, row: 0 },
+      { codigo: 'FIS100', nombre: 'Introducción a la Física', creditos: 6, color: 'FIS', col: 0, row: 1 },
+      { codigo: 'QUI010', nombre: 'Química y Sociedad', creditos: 3, color: 'QUI', col: 0, row: 2 },
+      { codigo: 'IWG101', nombre: 'Introducción a la Ingeniería', creditos: 3, color: 'ING', col: 0, row: 3 },
+      { codigo: 'EFI100', nombre: 'Educación Física I', creditos: 2, color: 'DEP', col: 0, row: 4 },
+      // ... solo de ejemplo, puedes extender los datos
+    ];
+
+    const aprobados = new Set(JSON.parse(localStorage.getItem("ramos_aprobados") || "[]"));
+
+    function crearRamo(ramo) {
+      const taken = aprobados.has(ramo.codigo);
       const div = document.createElement("div");
-      div.className = "materia" + (isTaken ? " taken" : "") + (!canTake && !isTaken ? " locked" : "");
-      div.style.backgroundColor = categorias[categoria]?.[0] || "#444";
-      div.innerHTML = `<div class="creditos">${creditos}</div><div class="name">${nombre}</div><div class="code">${codigo}</div>`;
+      div.className = "materia";
+      if (taken) div.classList.add("taken");
+      div.style.gridColumnStart = ramo.col + 1;
+      div.style.gridRowStart = ramo.row + 1;
+      div.style.backgroundColor = colores[ramo.color][0];
+      div.innerHTML = \`
+        <div class="credito">\${ramo.creditos}</div>
+        <div>\${ramo.nombre}</div>
+      \`;
       div.onclick = () => {
-        if (isTaken) taken.delete(codigo);
-        else if (canTake) taken.add(codigo);
-        localStorage.setItem("takenCourses", JSON.stringify([...taken]));
+        if (aprobados.has(ramo.codigo)) {
+          aprobados.delete(ramo.codigo);
+        } else {
+          aprobados.add(ramo.codigo);
+        }
+        localStorage.setItem("ramos_aprobados", JSON.stringify([...aprobados]));
         renderMalla();
       };
-      return { div, creditos: parseInt(creditos) || 0, codigo };
+      return div;
     }
 
     function renderMalla() {
-      const grid = document.getElementById("malla-grid");
+      const grid = document.getElementById("grid");
       grid.innerHTML = "";
-      const entries = Object.entries(malla);
-      let totalCreditos = 0, aprobados = 0;
+      let total = 0, suma = 0;
 
-      for (let i = 0; i < entries.length; i++) {
-        const sem = entries[i][1];
-        const col = document.createElement("div");
-        col.className = "semestre-col";
+      ramos.forEach(r => {
+        total += r.creditos;
+        if (aprobados.has(r.codigo)) suma += r.creditos;
+        grid.appendChild(crearRamo(r));
+      });
 
-        sem.forEach(([nombre, codigo, creditos, _, categoria, prereqs]) => {
-          const { div, creditos: c, codigo: cod } = createMateria(nombre, codigo, creditos, categoria, prereqs);
-          totalCreditos += c;
-          if (taken.has(cod)) aprobados += c;
-          col.appendChild(div);
-        });
-
-        grid.appendChild(col);
-      }
-
-      // Leyenda
       const leyenda = document.getElementById("leyenda");
       leyenda.innerHTML = "";
-      for (const key in categorias) {
-        const [color, nombre] = categorias[key];
-        const item = document.createElement("span");
-        item.innerHTML = `<span class="color-box" style="background:${color}"></span> ${nombre}`;
-        leyenda.appendChild(item);
+      for (const key in colores) {
+        const [color, label] = colores[key];
+        const span = document.createElement("span");
+        span.innerHTML = \`<div class="color" style="background:\${color}"></div>\${label}\`;
+        leyenda.appendChild(span);
       }
 
-      const progreso = document.getElementById("progreso");
-      const porcentaje = totalCreditos ? Math.round((aprobados / totalCreditos) * 100) : 0;
-      progreso.innerHTML = `Créditos aprobados: ${aprobados} / ${totalCreditos} (${porcentaje}%)`;
+      document.getElementById("progreso").textContent = \`Créditos aprobados: \${suma} / \${total} (\${Math.round((suma/total)*100)}%)\`;
+    }
+
+    function resetMalla() {
+      localStorage.removeItem("ramos_aprobados");
+      renderMalla();
     }
 
     renderMalla();
