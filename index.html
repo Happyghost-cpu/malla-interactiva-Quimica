@@ -137,109 +137,150 @@
 
   <script>
     const malla = {
- "name": "ICQ",
- "malla": {
-    "s1": [
-        ["Introducción a las ciencias naturales","ICN-116009C","4",0,"PC",[],""],
-        ["Introducción a la experimentación científica","IEC-106002C","3",0,"PC",[],""],
-        ["Matemática fundamental","MF-111001C","4",0,"MAT",[],""],
-        ["Electiva del componente lenguaje (Parte 1 / Español)","ELEC-ESP1","2",0,"ELE",[],""],
-        ["Electiva del componente Formación social y ciudadana","ELEC-SOC","2",0,"ELE",[],""],
-        ["Inglés I ","ELEC-ENG","2","2","ELE",[],""]
-    ],
-    "s2": [
-        ["Electiva del componente Estilos de vida saludable (deporte)","ELEC-EVS",2,2,"Custom",[],""],
-        ["Física fundamental I","FF1-106001C","4","4","FIS",["ICN-116009C","IEC-106002C","CAL1-111013C"],""],
-        ["Biología general","BIO-102052C","4","4","PC",["ICN-116009C","IEC-106002C"],""],
-        ["Cálculo I\t","CAL1-111013C","3","3","MAT",["MF-111001C"],""],
-        ["Química general\t","QG-116013C","4","4","PC",[],""],
-        ["Inglés II","ELEC-ENG2","2","2","ELE",["ELEC-ENG"],""]
-    ],
-    "s3": [
-        ["Experimentación científica","EXP-116003C","2","2","PC",["IEC-106002C","QG-116013C","QAN-116015C"],""],
-        ["Introducción al modelamiento matemático","IMM-111002C","3","3","MAT",["CAL1-111013C","FF1-106001C","BIO-102052C","QG-116013C"],""],
-        ["Física II","FF2-106008C","4","4","FIS",["FF1-106001C","CAL1-111013C"],""],
-        ["Cálculo II","CAL2-111014C","3","3","MAT",["CAL1-111013C"],""],
-        ["Química analítica","QAN-116015C","3","3","ANA",["QG-116013C","MF-111001C"],""],
-        ["Inglés III","ELEC-ENG3","2","2","ELE",["ELEC-ENG2"],""]
-    ],
-    "s4": [
-        ["Estadística química","ESTQ-116023C","2","2","ANA",["EXP-116003C","QAN-116015C","AI1-116018C"],""],
-        ["Laboratorio de química analítica","LQA-116028C","3","3","ANA",["QAN-116015C","EXP-116003C"],""],
-        ["Análisis intrumental I","AI1-116018C","3","3","ANA",["QAN-116015C","EAE-116002C"],""],
-        ["Física III","FF3-106016C","4","4","FIS",["CAL2-111014C","FF2-106008C"],""],
-        ["Matemáticas especiales I","ME1-111032C","3","3","MAT",["CAL2-111014C"],""],
-        ["Estructura atómica y enlace","EAE-116002C","3","3","PC",["CAL2-111014C","FF2-106008C","QG-116013C"],""],
-        ["Inglés IV","ELEC-ENG4","2","2","ELE",["ELEC-ENG3"],""]
-    ],
-    "s5": [
-        ["Laboratorio de análisis instrumental","LAI-116027C","3","3","ANA",["AI1-116018C","AI2-116021C"],""],
-        ["Análisis instrumental II","AI2-116021C","3","3","ANA",["AI1-116018C","FIQ1-116024C","EAE-116002C"],""],
-        ["Química inorgánica I","QI1-116031C","3","3","INO",["EAE-116002C"],""],
-        ["Química orgánica I","QO1-116039C","3","3","ORG",["EAE-116002C"],""],
-        ["Matemáticas especiales II","ME2-111036C","3","3","MAT",["ME1-111032C"],""],
-        ["Fisicoquímica I","FIQ1-116024C","3","3","FIQ",["EAE-116002C","ME1-111032C","FF3-106016C"],""]
-    ],
-    "s6": [
-        ["Electiva del componente lenguaje (Parte 2 / Español)","ELEC-ESP2","2","2","ELE",["ELEC-ESP1"],""],
-        ["Laboratorio de química inorgánica I","LI1-116029C","2","2","INO",["QI2-116032C","LAI-116027C"],""],
-        ["Laboratorio de química orgánica I","LO1-116036C","2","2","ORG",["QO1-116039C","LAI-116027C"],""],
-        ["Laboratorio de fisicoquímica I","LFQ1-116034C","2","2","FIQ",["FIQ1-116024C"],""],
-        ["Química inorgánica II","QI2-116032C","3","3","INO",["QI1-116031C","FIQ1-116024C"],""],
-        ["Química orgánica II","QO2-116040C","3","3","ORG",["QO1-116039C"],""],
-        ["Fisicoquímica II","FIQ2-116025C","3","3","FIQ",["ME2-111036C","FIQ1-116024C"],""]
-    ],
-    "s7": [
-        ["Bioquímica","BIQ-116043C","5","5","BIQ",["FIQ2-116025C","QO2-116040C","LAI-116027C"],""],
-        ["Química macromolecular","QMA-116057C","3","3","BIQ",["QO2-116040C","QI2-116032C"],""],
-        ["Seminario","SEM-116055C","1","1","PC",["FIQ2-116025C","QI2-116032C","QO2-116040C"],""],
-        ["Laboratorio de fisicoquímica II","LFQ2-116035C","2","2","FIQ",["FIQ2-116025C","LFQ1-116034C"],""],
-        ["Laboratorio de química orgánica II","LO2-116037C","2","2","ORG",["LAI-116027C","LO1-116036C","QO2-116040C"],""],
-        ["Laboratorio de química inorgánica II","LI2-116030C","2","2","INO",["LAI-116027C","LI1-116029C","QI2-116032C"],""],
-        ["Optativa en química I","OPT-1","3","3","OPQ",[],""]
-    ],
-    "s8": [
-        ["Electiva profesional II","ELEC-PROF2","3","3","ELE",[],""],
-        ["Electiva profesional I","ELEC-PROF1","3","3","ELE",[],""],
-        ["Electiva del componente Artístico-humanístico","ELEC-ART","2","2","ELE",[],""],
-        ["Optativa en química II","OPT-2","3","3","OPQ",[],""],
-        ["Química verde y ambiental","QVA-116054C","3","3","BIQ",["QO2-116040C","QI2-116032C"],""],
-        ["Identificación de compuestos","IDC-116033C","3","3","BIQ",["QO2-116040C","QI2-116032C","AI2-116021C"],""],
-        ["Biología molecular","BIOM-102116C","3","3","BIQ",["BIQ-116043C"],""]
-    ],
-    "s9": [
-        ["Trabajo de grado I","TG1-116083M","7","7","PC",["BIOM-102116C","IDC-116033C"],""]
-    ],
-    "s10": [
-        ["Trabajo de grado II","TG2-116084M","7","7","PC",["TG1-116083M"],""]
-    ]
-};
+      "s1": [
+          ["Introducción a las ciencias naturales","ICN-116009C","4",0,"PC",[],""],
+          ["Introducción a la experimentación científica","IEC-106002C","3",0,"PC",[],""],
+          ["Matemática fundamental","MF-111001C","4",0,"MAT",[],""],
+          ["Electiva del componente lenguaje (Parte 1 / Español)","ELEC-ESP1","2",0,"ELE",[],""],
+          ["Electiva del componente Formación social y ciudadana","ELEC-SOC","2",0,"ELE",[],""],
+          ["Inglés I ","ELEC-ENG","2","2","ELE",[],""]
+      ],
+      "s2": [
+          ["Electiva del componente Estilos de vida saludable (deporte)","ELEC-EVS",2,2,"Custom",[],""],
+          ["Física fundamental I","FF1-106001C","4","4","FIS",["ICN-116009C","IEC-106002C","CAL1-111013C"],""],
+          ["Biología general","BIO-102052C","4","4","PC",["ICN-116009C","IEC-106002C"],""],
+          ["Cálculo I\t","CAL1-111013C","3","3","MAT",["MF-111001C"],""],
+          ["Química general\t","QG-116013C","4","4","PC",[],""],
+          ["Inglés II","ELEC-ENG2","2","2","ELE",["ELEC-ENG"],""]
+      ],
+      "s3": [
+          ["Experimentación científica","EXP-116003C","2","2","PC",["IEC-106002C","QG-116013C","QAN-116015C"],""],
+          ["Introducción al modelamiento matemático","IMM-111002C","3","3","MAT",["CAL1-111013C","FF1-106001C","BIO-102052C","QG-116013C"],""],
+          ["Física II","FF2-106008C","4","4","FIS",["FF1-106001C","CAL1-111013C"],""],
+          ["Cálculo II","CAL2-111014C","3","3","MAT",["CAL1-111013C"],""],
+          ["Química analítica","QAN-116015C","3","3","ANA",["QG-116013C","MF-111001C"],""],
+          ["Inglés III","ELEC-ENG3","2","2","ELE",["ELEC-ENG2"],""]
+      ],
+      "s4": [
+          ["Estadística química","ESTQ-116023C","2","2","ANA",["EXP-116003C","QAN-116015C","AI1-116018C"],""],
+          ["Laboratorio de química analítica","LQA-116028C","3","3","ANA",["QAN-116015C","EXP-116003C"],""],
+          ["Análisis intrumental I","AI1-116018C","3","3","ANA",["QAN-116015C","EAE-116002C"],""],
+          ["Física III","FF3-106016C","4","4","FIS",["CAL2-111014C","FF2-106008C"],""],
+          ["Matemáticas especiales I","ME1-111032C","3","3","MAT",["CAL2-111014C"],""],
+          ["Estructura atómica y enlace","EAE-116002C","3","3","PC",["CAL2-111014C","FF2-106008C","QG-116013C"],""],
+          ["Inglés IV","ELEC-ENG4","2","2","ELE",["ELEC-ENG3"],""]
+      ],
+      "s5": [
+          ["Laboratorio de análisis instrumental","LAI-116027C","3","3","ANA",["AI1-116018C","AI2-116021C"],""],
+          ["Análisis instrumental II","AI2-116021C","3","3","ANA",["AI1-116018C","FIQ1-116024C","EAE-116002C"],""],
+          ["Química inorgánica I","QI1-116031C","3","3","INO",["EAE-116002C"],""],
+          ["Química orgánica I","QO1-116039C","3","3","ORG",["EAE-116002C"],""],
+          ["Matemáticas especiales II","ME2-111036C","3","3","MAT",["ME1-111032C"],""],
+          ["Fisicoquímica I","FIQ1-116024C","3","3","FIQ",["EAE-116002C","ME1-111032C","FF3-106016C"],""]
+      ],
+      "s6": [
+          ["Electiva del componente lenguaje (Parte 2 / Español)","ELEC-ESP2","2","2","ELE",["ELEC-ESP1"],""],
+          ["Laboratorio de química inorgánica I","LI1-116029C","2","2","INO",["QI2-116032C","LAI-116027C"],""],
+          ["Laboratorio de química orgánica I","LO1-116036C","2","2","ORG",["QO1-116039C","LAI-116027C"],""],
+          ["Laboratorio de fisicoquímica I","LFQ1-116034C","2","2","FIQ",["FIQ1-116024C"],""],
+          ["Química inorgánica II","QI2-116032C","3","3","INO",["QI1-116031C","FIQ1-116024C"],""],
+          ["Química orgánica II","QO2-116040C","3","3","ORG",["QO1-116039C"],""],
+          ["Fisicoquímica II","FIQ2-116025C","3","3","FIQ",["ME2-111036C","FIQ1-116024C"],""]
+      ],
+      "s7": [
+          ["Bioquímica","BIQ-116043C","5","5","BIQ",["FIQ2-116025C","QO2-116040C","LAI-116027C"],""],
+          ["Química macromolecular","QMA-116057C","3","3","BIQ",["QO2-116040C","QI2-116032C"],""],
+          ["Seminario","SEM-116055C","1","1","PC",["FIQ2-116025C","QI2-116032C","QO2-116040C"],""],
+          ["Laboratorio de fisicoquímica II","LFQ2-116035C","2","2","FIQ",["FIQ2-116025C","LFQ1-116034C"],""],
+          ["Laboratorio de química orgánica II","LO2-116037C","2","2","ORG",["LAI-116027C","LO1-116036C","QO2-116040C"],""],
+          ["Laboratorio de química inorgánica II","LI2-116030C","2","2","INO",["LAI-116027C","LI1-116029C","QI2-116032C"],""],
+          ["Optativa en química I","OPT-1","3","3","OPQ",[],""]
+      ],
+      "s8": [
+          ["Electiva profesional II","ELEC-PROF2","3","3","ELE",[],""],
+          ["Electiva profesional I","ELEC-PROF1","3","3","ELE",[],""],
+          ["Electiva del componente Artístico-humanístico","ELEC-ART","2","2","ELE",[],""],
+          ["Optativa en química II","OPT-2","3","3","OPQ",[],""],
+          ["Química verde y ambiental","QVA-116054C","3","3","BIQ",["QO2-116040C","QI2-116032C"],""],
+          ["Identificación de compuestos","IDC-116033C","3","3","BIQ",["QO2-116040C","QI2-116032C","AI2-116021C"],""],
+          ["Biología molecular","BIOM-102116C","3","3","BIQ",["BIQ-116043C"],""]
+      ],
+      "s9": [
+          ["Trabajo de grado I","TG1-116083M","7","7","PC",["BIOM-102116C","IDC-116033C"],""]
+      ],
+      "s10": [
+          ["Trabajo de grado II","TG2-116084M","7","7","PC",["TG1-116083M"],""]
+      ]
+  };
     const categorias = {
-    "PC":["#949494","Plan Común"],
-    "MAT":["#0091ff","Matemáticas"],
-    "ELE":["#6b17e8","Electivas"],
-    "Custom":["#000000","Fuera de la malla | editado"],
-    "FIS":["#fffa61","Física"],
-    "ANA":["#eb9c2d","Analítca"],
-    "INO":["#fcce8d","Inorgánica"],
-    "ORG":["#8ded73","Orgánica"],
-    "FIQ":["#86f1f3","Fisicoquímica"],
-    "BIQ":["#ea6df3","Bioquímica y complementos"],
-    "OPQ":["#abc71f","Optativas"]
-};
+      "PC":["#949494","Plan Común"],
+      "MAT":["#0091ff","Matemáticas"],
+      "ELE":["#6b17e8","Electivas"],
+      "Custom":["#6b17e8","Electivas"],
+      "FIS":["#fffa61","Física"],
+      "ANA":["#eb9c2d","Analítca"],
+      "INO":["#fcce8d","Inorgánica"],
+      "ORG":["#8ded73","Orgánica"],
+      "FIQ":["#86f1f3","Fisicoquímica"],
+      "BIQ":["#ea6df3","Bioquímica y complementos"],
+      "OPQ":["#abc71f","Optativas"]
+  };
     const codigosAbrev = {
-    "PC":["#949494","Plan Común"],
-    "MAT":["#0091ff","Matemáticas"],
-    "ELE":["#6b17e8","Electivas"],
-    "Custom":["#000000","Fuera de la malla | editado"],
-    "FIS":["#fffa61","Física"],
-    "ANA":["#eb9c2d","Analítca"],
-    "INO":["#fcce8d","Inorgánica"],
-    "ORG":["#8ded73","Orgánica"],
-    "FIQ":["#86f1f3","Fisicoquímica"],
-    "BIQ":["#ea6df3","Bioquímica y complementos"],
-    "OPQ":["#abc71f","Optativas"]
-};
+          "Introducción a las ciencias naturales":"ICN-116009C",
+          "Introducción a la experimentación científica":"IEC-106002C",
+          "Matemática fundamental":"MF-111001C",
+          "Electiva del componente lenguaje (Parte 1 / Español)":"ELEC-ESP1",
+          "Electiva del componente Formación social y ciudadana":"ELEC-SOC",
+          "Inglés I ":"ELEC-ENG",
+          "Electiva del componente Estilos de vida saludable (deporte)":"ELEC-EVS",
+          "Física fundamental I":"FF1-106001C",
+          "Biología general":"BIO-102052C",
+          "Cálculo I\t":"CAL1-111013C",
+          "Química general\t":"QG-116013C",
+          "Inglés II":"ELEC-ENG2",
+          "Experimentación científica":"EXP-116003C",
+          "Introducción al modelamiento matemático":"IMM-111002C",
+          "Física II":"FF2-106008C",
+          "Cálculo II":"CAL2-111014C",
+          "Química analítica":"QAN-116015C",
+          "Inglés III":"ELEC-ENG3",
+          "Estadística química":"ESTQ-116023C",
+          "Laboratorio de química analítica":"LQA-116028C",
+          "Análisis intrumental I":"AI1-116018C",
+          "Física III":"FF3-106016C",
+          "Matemáticas especiales I":"ME1-111032C",
+          "Estructura atómica y enlace":"EAE-116002C",
+          "Inglés IV":"ELEC-ENG4",
+          "Laboratorio de análisis instrumental":"LAI-116027C",
+          "Análisis instrumental II":"AI2-116021C",
+          "Química inorgánica I":"QI1-116031C",
+          "Química orgánica I":"QO1-116039C",
+          "Matemáticas especiales II":"ME2-111036C",
+          "Fisicoquímica I":"FIQ1-116024C",
+          "Electiva del componente lenguaje (Parte 2 / Español)":"ELEC-ESP2",
+          "Laboratorio de química inorgánica I":"LI1-116029C",
+          "Laboratorio de química orgánica I":"LO1-116036C",
+          "Laboratorio de fisicoquímica I":"LFQ1-116034C",
+          "Química inorgánica II":"QI2-116032C",
+          "Química orgánica II":"QO2-116040C",
+          "Fisicoquímica II":"FIQ2-116025C",
+          "Bioquímica":"BIQ-116043C",
+          "Química macromolecular":"QMA-116057C",
+          "Seminario":"SEM-116055C",
+          "Laboratorio de fisicoquímica II":"LFQ2-116035C",
+          "Laboratorio de química orgánica II":"LO2-116037C",
+          "Laboratorio de química inorgánica II":"LI2-116030C",
+          "Optativa en química I":"OPT-1",
+          "Electiva profesional II":"ELEC-PROF2",
+          "Electiva profesional I":"ELEC-PROF1",
+          "Electiva del componente Artístico-humanístico":"ELEC-ART",
+          "Optativa en química II":"OPT-2",
+          "Química verde y ambiental":"QVA-116054C",
+          "Identificación de compuestos":"IDC-116033C",
+          "Biología molecular":"BIOM-102116C",
+          "Trabajo de grado I":"TG1-116083M",
+          "Trabajo de grado II":"TG2-116084M"
+  };
 
     let taken = new Set(JSON.parse(localStorage.getItem("takenCourses") || "[]"));
 
