@@ -4,52 +4,81 @@
   <meta charset="UTF-8" />
   <title>Carrera de química pura UNIVALLE</title>
   <style>
-    body { font-family: sans-serif; background: #202124; color: #fff; margin: 0; }
-    header { background: #111; padding: 20px; font-size: 24px; text-align: center; font-weight: bold; }
-    .instrucciones {
-      background: #333; padding: 10px 20px; margin: 10px;
-      border-radius: 5px; font-size: 14px;
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #1e1e1e;
+      color: white;
+      margin: 0;
+      padding: 0;
     }
+
+    header {
+      background-color: #111;
+      padding: 20px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 20px 0;
+    }
+
+    .controls button {
+      background-color: #333;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
     .grid {
       display: grid;
-      grid-template-columns: repeat(10, 1fr);
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
       gap: 10px;
-      padding: 0 20px;
+      padding: 10px 20px;
     }
+
     .semestre {
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      position: relative;
+      gap: 10px;
     }
+
     .materia {
-      background: #444;
-      color: #000;
-      border-radius: 5px;
-      padding: 20px 10px 10px 10px;
-      border: 2px solid #fff;
       position: relative;
-      font-size: 12px;
-      min-height: 60px;
+      background-color: #2c2c2c;
+      color: white;
+      padding: 15px;
+      border-radius: 8px;
+      font-size: 13px;
+      border: 2px solid #555;
       cursor: pointer;
       overflow: hidden;
     }
+
     .materia.taken::after {
       content: "";
       position: absolute;
       top: 0;
       left: 0;
-      width: 141%;
+      width: 150%;
       height: 4px;
       background: red;
       transform: rotate(-45deg);
       transform-origin: left top;
       z-index: 10;
     }
+
     .materia.locked {
       opacity: 0.3;
       pointer-events: none;
     }
+
     .materia .numero {
       position: absolute;
       top: 5px;
@@ -59,8 +88,9 @@
       border-radius: 50%;
       padding: 2px 6px;
       font-size: 10px;
-      z-index: 1;
+      z-index: 2;
     }
+
     .materia .creditos {
       position: absolute;
       top: 5px;
@@ -70,80 +100,74 @@
       padding: 2px 5px;
       border-radius: 3px;
       font-size: 10px;
-      z-index: 1;
+      z-index: 2;
     }
+
     .materia .tooltip {
       visibility: hidden;
-      width: 210px;
-      background: #333;
+      background-color: #444;
       color: #fff;
       text-align: center;
-      border-radius: 5px;
       padding: 5px;
+      border-radius: 5px;
       position: absolute;
-      z-index: 100;
-      top: 100%;
+      z-index: 999;
+      bottom: -40px;
       left: 50%;
       transform: translateX(-50%);
       font-size: 11px;
+      white-space: pre-line;
     }
+
     .materia:hover .tooltip {
       visibility: visible;
     }
+
     .leyenda {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 15px;
-      margin: 30px 10px;
+      gap: 10px;
+      margin-top: 30px;
       font-size: 13px;
     }
+
     .leyenda span {
       display: flex;
       align-items: center;
       gap: 5px;
     }
+
     .color-box {
       width: 15px;
       height: 15px;
       border-radius: 3px;
       display: inline-block;
     }
+
     .progreso {
       text-align: center;
       margin: 20px;
       font-size: 14px;
     }
-    .etiqueta-anio {
-      text-align: center;
-      font-weight: bold;
-      grid-column: span 2;
-      margin-top: 20px;
-    }
-    .btn-limpiar {
-      display: block;
-      margin: 0 auto 20px auto;
-      background: #c62828;
-      color: #fff;
-      border: none;
-      padding: 10px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
   </style>
 </head>
 <body>
   <header>Carrera de química pura UNIVALLE</header>
-  <div class="instrucciones">
-    <strong>¿Cómo usar esta malla?</strong><br>
-    Haz clic sobre las materias que ya cursaste. Las materias con prerrequisitos se desbloquean automáticamente.
-    Puedes reiniciar tu progreso con el botón de abajo. Pasa el cursor por cada materia para ver su información.
+
+  <div class="controls">
+    <button onclick="limpiarMalla()">Limpiar ramos aprobados</button>
   </div>
-  <button class="btn-limpiar" onclick="limpiarMalla()">Limpiar ramos aprobados</button>
+
+  <div class="instrucciones" style="padding: 10px 20px; background: #333; margin: 0 20px 20px; border-radius: 6px; font-size: 13px;">
+    <strong>¿Cómo usar esta malla?</strong><br>
+    Haz clic sobre las materias que ya cursaste. Se tacharán con una línea diagonal roja como en el ejemplo.<br>
+    Las materias con prerrequisitos se desbloquean automáticamente. Puedes reiniciar tu progreso con el botón.
+  </div>
+
   <div class="grid" id="grid"></div>
   <div class="leyenda" id="leyenda"></div>
   <div class="progreso" id="progreso"></div>
-
   <script>
     const malla = {
       "s1": [
@@ -246,30 +270,30 @@
       const grid = document.getElementById("grid");
       grid.innerHTML = "";
       let total = 0, aprobados = 0, contador = 1;
-      let semestreKeys = Object.keys(malla);
+      const semestreKeys = Object.keys(malla);
+
       for (let i = 0; i < semestreKeys.length; i++) {
         const key = semestreKeys[i];
         const col = document.createElement("div");
         col.className = "semestre";
-
-        if (i % 2 === 0) {
-          const anio = Math.floor(i / 2) + 1;
-          const anioLabel = document.createElement("div");
-          anioLabel.className = "etiqueta-anio";
-          anioLabel.textContent = "Año " + anio + " - Semestre " + (i + 1);
-          grid.appendChild(anioLabel);
-        }
 
         for (const curso of malla[key]) {
           const [nombre, codigo, creditos, _, cat, prereqs] = curso;
           const isTaken = taken.has(codigo);
           const canTake = prereqs.every(p => taken.has(p));
           const box = document.createElement("div");
-          box.className = "materia" + (isTaken ? " taken" : "") + (!canTake && !isTaken ? " locked" : "");
+
+          box.className = "materia" +
+            (isTaken ? " taken" : "") +
+            (!canTake && !isTaken ? " locked" : "");
           box.style.background = categorias[cat]?.[0] || "#555";
 
-          const abrevPrerreqs = prereqs.length ? prereqs.map(p => codigosAbrev[p] || p).join(", ") : "ninguno";
-          const tooltipText = `Materia ${nombre}, posee ${creditos} créditos y tiene como prerrequisitos a ${abrevPrerreqs}.`;
+          const abrevPrerreqs = prereqs.length
+            ? prereqs.map(p => codigosAbrev[p] || p).join(", ")
+            : "ninguno";
+
+          const tooltipText =
+            `Materia ${nombre}, posee ${creditos} créditos\nPrerrequisitos: ${abrevPrerreqs}`;
 
           box.innerHTML = `
             <div class='numero'>${contador}</div>
@@ -303,7 +327,8 @@
       leyenda.innerHTML = "";
       for (const cat in categorias) {
         const span = document.createElement("span");
-        span.innerHTML = `<span class='color-box' style='background:${categorias[cat][0]}'></span> ${categorias[cat][1]}`;
+        span.innerHTML = `
+          <span class='color-box' style='background:${categorias[cat][0]}'></span> ${categorias[cat][1]}`;
         leyenda.appendChild(span);
       }
     }
