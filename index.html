@@ -4,14 +4,11 @@
   <meta charset="UTF-8" />
   <title>Carrera de química pura UNIVALLE</title>
   <style>
-    body { margin: 0; font-family: sans-serif; background: #202124; color: #fff; }
-    header { background: #111; padding: 20px; text-align: center; font-size: 24px; font-weight: bold; }
+    body { font-family: sans-serif; background: #202124; color: #fff; margin: 0; }
+    header { background: #111; padding: 20px; font-size: 24px; text-align: center; font-weight: bold; }
     .instrucciones {
-      background: #333;
-      padding: 15px;
-      margin: 10px 20px;
-      border-radius: 5px;
-      font-size: 14px;
+      background: #333; padding: 10px 20px; margin: 10px;
+      border-radius: 5px; font-size: 14px;
     }
     .grid {
       display: grid;
@@ -26,18 +23,19 @@
       position: relative;
     }
     .materia {
-      position: relative;
       background: #444;
       color: #000;
-      padding: 20px 10px 10px 10px;
       border-radius: 5px;
-      font-size: 12px;
-      cursor: pointer;
+      padding: 20px 10px 10px 10px;
       border: 2px solid #fff;
+      position: relative;
+      font-size: 12px;
       min-height: 60px;
+      cursor: pointer;
+      transition: filter 0.3s ease;
     }
     .materia.taken {
-      filter: grayscale(100%) brightness(1.2);
+      filter: grayscale(100%) brightness(1.3);
     }
     .materia.locked {
       opacity: 0.3;
@@ -65,7 +63,7 @@
     }
     .materia .tooltip {
       visibility: hidden;
-      width: 200px;
+      width: 210px;
       background: #333;
       color: #fff;
       text-align: center;
@@ -86,7 +84,7 @@
       flex-wrap: wrap;
       justify-content: center;
       gap: 15px;
-      margin-top: 30px;
+      margin: 30px 10px;
       font-size: 13px;
     }
     .leyenda span {
@@ -126,18 +124,16 @@
 <body>
   <header>Carrera de química pura UNIVALLE</header>
   <div class="instrucciones">
-    <strong>¿Cómo usar esta malla?</strong><br />
+    <strong>¿Cómo usar esta malla?</strong><br>
     Haz clic sobre las materias que ya cursaste. Las materias con prerrequisitos se desbloquean automáticamente.
-    Puedes reiniciar tu progreso con el botón inferior. Pasa el cursor por encima de cada materia para ver su información.
+    Puedes reiniciar tu progreso con el botón de abajo. Pasa el cursor por cada materia para ver su información.
   </div>
   <button class="btn-limpiar" onclick="limpiarMalla()">Limpiar ramos aprobados</button>
   <div class="grid" id="grid"></div>
   <div class="leyenda" id="leyenda"></div>
   <div class="progreso" id="progreso"></div>
-
-  <script>
-    const malla = {
-      "s1": [
+  
+const malla = {"s1": [
           ["Introducción a las ciencias naturales","ICN-116009C","4",0,"PC",[],""],
           ["Introducción a la experimentación científica","IEC-106002C","3",0,"PC",[],""],
           ["Matemática fundamental","MF-111001C","4",0,"MAT",[],""],
@@ -210,9 +206,8 @@
       ],
       "s10": [
           ["Trabajo de grado II","TG2-116084M","7","7","PC",["TG1-116083M"],""]
-      ]
-  };
-    const categorias = {
+      ]};
+const categorias = {
       "PC":["#949494","Plan Común"],
       "MAT":["#0091ff","Matemáticas"],
       "ELE":["#6b17e8","Electivas"],
@@ -223,148 +218,97 @@
       "ORG":["#8ded73","Orgánica"],
       "FIQ":["#86f1f3","Fisicoquímica"],
       "BIQ":["#ea6df3","Bioquímica y complementos"],
-      "OPQ":["#abc71f","Optativas"]
-  };
-    const codigosAbrev = {
-          "Introducción a las ciencias naturales":"ICN-116009C",
-          "Introducción a la experimentación científica":"IEC-106002C",
-          "Matemática fundamental":"MF-111001C",
-          "Electiva del componente lenguaje (Parte 1 / Español)":"ELEC-ESP1",
-          "Electiva del componente Formación social y ciudadana":"ELEC-SOC",
-          "Inglés I ":"ELEC-ENG",
-          "Electiva del componente Estilos de vida saludable (deporte)":"ELEC-EVS",
-          "Física fundamental I":"FF1-106001C",
-          "Biología general":"BIO-102052C",
-          "Cálculo I\t":"CAL1-111013C",
-          "Química general\t":"QG-116013C",
-          "Inglés II":"ELEC-ENG2",
-          "Experimentación científica":"EXP-116003C",
-          "Introducción al modelamiento matemático":"IMM-111002C",
-          "Física II":"FF2-106008C",
-          "Cálculo II":"CAL2-111014C",
-          "Química analítica":"QAN-116015C",
-          "Inglés III":"ELEC-ENG3",
-          "Estadística química":"ESTQ-116023C",
-          "Laboratorio de química analítica":"LQA-116028C",
-          "Análisis intrumental I":"AI1-116018C",
-          "Física III":"FF3-106016C",
-          "Matemáticas especiales I":"ME1-111032C",
-          "Estructura atómica y enlace":"EAE-116002C",
-          "Inglés IV":"ELEC-ENG4",
-          "Laboratorio de análisis instrumental":"LAI-116027C",
-          "Análisis instrumental II":"AI2-116021C",
-          "Química inorgánica I":"QI1-116031C",
-          "Química orgánica I":"QO1-116039C",
-          "Matemáticas especiales II":"ME2-111036C",
-          "Fisicoquímica I":"FIQ1-116024C",
-          "Electiva del componente lenguaje (Parte 2 / Español)":"ELEC-ESP2",
-          "Laboratorio de química inorgánica I":"LI1-116029C",
-          "Laboratorio de química orgánica I":"LO1-116036C",
-          "Laboratorio de fisicoquímica I":"LFQ1-116034C",
-          "Química inorgánica II":"QI2-116032C",
-          "Química orgánica II":"QO2-116040C",
-          "Fisicoquímica II":"FIQ2-116025C",
-          "Bioquímica":"BIQ-116043C",
-          "Química macromolecular":"QMA-116057C",
-          "Seminario":"SEM-116055C",
-          "Laboratorio de fisicoquímica II":"LFQ2-116035C",
-          "Laboratorio de química orgánica II":"LO2-116037C",
-          "Laboratorio de química inorgánica II":"LI2-116030C",
-          "Optativa en química I":"OPT-1",
-          "Electiva profesional II":"ELEC-PROF2",
-          "Electiva profesional I":"ELEC-PROF1",
-          "Electiva del componente Artístico-humanístico":"ELEC-ART",
-          "Optativa en química II":"OPT-2",
-          "Química verde y ambiental":"QVA-116054C",
-          "Identificación de compuestos":"IDC-116033C",
-          "Biología molecular":"BIOM-102116C",
-          "Trabajo de grado I":"TG1-116083M",
-          "Trabajo de grado II":"TG2-116084M"
-  };
+      "OPQ":["#abc71f","Optativas"]};
 
-    let taken = new Set(JSON.parse(localStorage.getItem("takenCourses") || "[]"));
+// Generar abreviaturas por código
+const codigosAbrev = {};
+for (const semestre of Object.values(malla)) {
+  for (const [nombre, codigo] of semestre) {
+    codigosAbrev[codigo] = nombre.split(" ").map(p => p[0]).join("").toUpperCase();
+  }
+}
 
-    function renderMalla() {
-      const grid = document.getElementById("grid");
-      grid.innerHTML = "";
-      let total = 0,
-        aprobados = 0,
-        contador = 1;
-      const keys = Object.keys(malla);
-      for (let i = 0; i < keys.length; i++) {
-        const key = keys[i];
-        const col = document.createElement("div");
-        col.className = "semestre";
+let taken = new Set(JSON.parse(localStorage.getItem("takenCourses") || "[]"));
 
-        if (i % 2 === 0) {
-          const anio = Math.floor(i / 2) + 1;
-          const anioLabel = document.createElement("div");
-          anioLabel.className = "etiqueta-anio";
-          anioLabel.textContent = "Año " + anio + " - Semestre " + (i + 1);
-          grid.appendChild(anioLabel);
-        }
+function renderMalla() {
+  const grid = document.getElementById("grid");
+  grid.innerHTML = "";
+  let total = 0, aprobados = 0, contador = 1;
+  let semestreKeys = Object.keys(malla);
+  for (let i = 0; i < semestreKeys.length; i++) {
+    const key = semestreKeys[i];
+    const col = document.createElement("div");
+    col.className = "semestre";
 
-        for (let curso of malla[key]) {
-          const [nombre, codigo, creditos, _, cat, prereqs] = curso;
-          const isTaken = taken.has(codigo);
-          const canTake = prereqs.every((p) => taken.has(p));
-          const box = document.createElement("div");
-          box.className = "materia" + (isTaken ? " taken" : "") + (!canTake && !isTaken ? " locked" : "");
-          box.style.background = categorias[cat]?.[0] || "#555";
-
-          const abrevPrerreqs = prereqs.length ? prereqs.map((p) => codigosAbrev[p] || p).join(", ") : "ninguno";
-          const tooltipText = `Materia ${nombre}, posee ${creditos} créditos y tiene como prerrequisitos a ${abrevPrerreqs}.`;
-
-          box.innerHTML = `
-            <div class='numero'>${contador}</div>
-            <div class='creditos'>${creditos} cr</div>
-            <div><strong>${nombre}</strong></div>
-            <div style='font-size:10px'>${codigo}</div>
-            <div class='tooltip'>${tooltipText}</div>`;
-
-          box.onclick = () => {
-            if (isTaken) taken.delete(codigo);
-            else if (canTake) taken.add(codigo);
-            localStorage.setItem("takenCourses", JSON.stringify([...taken]));
-            renderMalla();
-          };
-
-          total += parseInt(creditos);
-          if (isTaken) aprobados += parseInt(creditos);
-          col.appendChild(box);
-          contador++;
-        }
-
-        grid.appendChild(col);
-      }
-
-      renderLeyenda();
-      renderProgreso(aprobados, total);
+    if (i % 2 === 0) {
+      const anio = Math.floor(i / 2) + 1;
+      const anioLabel = document.createElement("div");
+      anioLabel.className = "etiqueta-anio";
+      anioLabel.textContent = "Año " + anio + " - Semestre " + (i + 1);
+      grid.appendChild(anioLabel);
     }
 
-    function renderLeyenda() {
-      const leyenda = document.getElementById("leyenda");
-      leyenda.innerHTML = "";
-      for (let cat in categorias) {
-        const span = document.createElement("span");
-        span.innerHTML = `<span class='color-box' style='background:${categorias[cat][0]}'></span> ${categorias[cat][1]}`;
-        leyenda.appendChild(span);
-      }
+    for (const curso of malla[key]) {
+      const [nombre, codigo, creditos, _, cat, prereqs] = curso;
+      const isTaken = taken.has(codigo);
+      const canTake = prereqs.every(p => taken.has(p));
+      const box = document.createElement("div");
+      box.className = "materia" + (isTaken ? " taken" : "") + (!canTake && !isTaken ? " locked" : "");
+      box.style.background = categorias[cat]?.[0] || "#555";
+
+      const abrevPrerreqs = prereqs.length ? prereqs.map(p => codigosAbrev[p] || p).join(", ") : "ninguno";
+      const tooltipText = `Materia ${nombre}, posee ${creditos} créditos y tiene como prerrequisitos a ${abrevPrerreqs}.`;
+
+      box.innerHTML = `
+        <div class='numero'>${contador}</div>
+        <div class='creditos'>${creditos} cr</div>
+        <div><strong>${nombre}</strong></div>
+        <div style='font-size:10px'>${codigo}</div>
+        <div class='tooltip'>${tooltipText}</div>`;
+
+      box.onclick = () => {
+        if (isTaken) taken.delete(codigo);
+        else if (canTake) taken.add(codigo);
+        localStorage.setItem("takenCourses", JSON.stringify([...taken]));
+        renderMalla();
+      };
+
+      total += parseInt(creditos);
+      if (isTaken) aprobados += parseInt(creditos);
+      col.appendChild(box);
+      contador++;
     }
 
-    function renderProgreso(hecho, total) {
-      const p = document.getElementById("progreso");
-      const porcentaje = total ? Math.round((hecho / total) * 100) : 0;
-      p.innerText = `Créditos aprobados: ${hecho} / ${total} (${porcentaje}%)`;
-    }
+    grid.appendChild(col);
+  }
 
-    function limpiarMalla() {
-      taken = new Set();
-      localStorage.setItem("takenCourses", "[]");
-      renderMalla();
-    }
+  renderLeyenda();
+  renderProgreso(aprobados, total);
+}
 
-    renderMalla();
-  </script>
+function renderLeyenda() {
+  const leyenda = document.getElementById("leyenda");
+  leyenda.innerHTML = "";
+  for (const cat in categorias) {
+    const span = document.createElement("span");
+    span.innerHTML = `<span class='color-box' style='background:${categorias[cat][0]}'></span> ${categorias[cat][1]}`;
+    leyenda.appendChild(span);
+  }
+}
+
+function renderProgreso(hecho, total) {
+  const p = document.getElementById("progreso");
+  const porcentaje = total ? Math.round((hecho / total) * 100) : 0;
+  p.innerText = `Créditos aprobados: ${hecho} / ${total} (${porcentaje}%)`;
+}
+
+function limpiarMalla() {
+  taken = new Set();
+  localStorage.setItem("takenCourses", "[]");
+  renderMalla();
+}
+
+renderMalla();
+</script>
 </body>
 </html>
