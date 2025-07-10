@@ -145,21 +145,7 @@
   <div class="progreso" id="progreso"></div>
 
   <script>
-    const malla = {};
-    const categorias = {
-      "PC":["#949494","Plan Común"],
-      "MAT":["#0091ff","Matemáticas"],
-      "ELE":["#6b17e8","Electivas"],
-      "Custom":["#6b17e8","Electivas"],
-      "FIS":["#fffa61","Física"],
-      "ANA":["#eb9c2d","Analítca"],
-      "INO":["#fcce8d","Inorgánica"],
-      "ORG":["#8ded73","Orgánica"],
-      "FIQ":["#86f1f3","Fisicoquímica"],
-      "BIQ":["#ea6df3","Bioquímica y complementos"],
-      "OPQ":["#abc71f","Optativas"]};
-
-    const codigosAbrev = {
+    const malla = {
       "s1": [
           ["Introducción a las ciencias naturales","ICN-116009C","4",0,"PC",[],""],
           ["Introducción a la experimentación científica","IEC-106002C","3",0,"PC",[],""],
@@ -234,6 +220,20 @@
       "s10": [
           ["Trabajo de grado II","TG2-116084M","7","7","PC",["TG1-116083M"],""]
       ]};
+    const categorias = {
+      "PC":["#949494","Plan Común"],
+      "MAT":["#0091ff","Matemáticas"],
+      "ELE":["#6b17e8","Electivas"],
+      "Custom":["#6b17e8","Electivas"],
+      "FIS":["#fffa61","Física"],
+      "ANA":["#eb9c2d","Analítca"],
+      "INO":["#fcce8d","Inorgánica"],
+      "ORG":["#8ded73","Orgánica"],
+      "FIQ":["#86f1f3","Fisicoquímica"],
+      "BIQ":["#ea6df3","Bioquímica y complementos"],
+      "OPQ":["#abc71f","Optativas"]};
+
+    const codigosAbrev = {};
     for (const semestre of Object.values(malla)) {
       for (const [nombre, codigo] of semestre) {
         codigosAbrev[codigo] = nombre.split(" ").map(p => p[0]).join("").toUpperCase();
