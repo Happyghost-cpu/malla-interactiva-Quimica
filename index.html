@@ -32,10 +32,19 @@
       font-size: 12px;
       min-height: 60px;
       cursor: pointer;
-      transition: filter 0.3s ease;
+      overflow: hidden;
     }
-    .materia.taken {
-      filter: grayscale(100%) brightness(1.3);
+    .materia.taken::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 141%;
+      height: 4px;
+      background: red;
+      transform: rotate(-45deg);
+      transform-origin: left top;
+      z-index: 10;
     }
     .materia.locked {
       opacity: 0.3;
@@ -50,6 +59,7 @@
       border-radius: 50%;
       padding: 2px 6px;
       font-size: 10px;
+      z-index: 1;
     }
     .materia .creditos {
       position: absolute;
@@ -60,6 +70,7 @@
       padding: 2px 5px;
       border-radius: 3px;
       font-size: 10px;
+      z-index: 1;
     }
     .materia .tooltip {
       visibility: hidden;
@@ -70,7 +81,7 @@
       border-radius: 5px;
       padding: 5px;
       position: absolute;
-      z-index: 1;
+      z-index: 100;
       top: 100%;
       left: 50%;
       transform: translateX(-50%);
@@ -132,8 +143,24 @@
   <div class="grid" id="grid"></div>
   <div class="leyenda" id="leyenda"></div>
   <div class="progreso" id="progreso"></div>
+
   <script>
-  const malla = {"s1": [
+    const malla = {};
+    const categorias = {
+      "PC":["#949494","Plan Común"],
+      "MAT":["#0091ff","Matemáticas"],
+      "ELE":["#6b17e8","Electivas"],
+      "Custom":["#6b17e8","Electivas"],
+      "FIS":["#fffa61","Física"],
+      "ANA":["#eb9c2d","Analítca"],
+      "INO":["#fcce8d","Inorgánica"],
+      "ORG":["#8ded73","Orgánica"],
+      "FIQ":["#86f1f3","Fisicoquímica"],
+      "BIQ":["#ea6df3","Bioquímica y complementos"],
+      "OPQ":["#abc71f","Optativas"]};
+
+    const codigosAbrev = {
+      "s1": [
           ["Introducción a las ciencias naturales","ICN-116009C","4",0,"PC",[],""],
           ["Introducción a la experimentación científica","IEC-106002C","3",0,"PC",[],""],
           ["Matemática fundamental","MF-111001C","4",0,"MAT",[],""],
@@ -207,108 +234,93 @@
       "s10": [
           ["Trabajo de grado II","TG2-116084M","7","7","PC",["TG1-116083M"],""]
       ]};
-const categorias = {
-      "PC":["#949494","Plan Común"],
-      "MAT":["#0091ff","Matemáticas"],
-      "ELE":["#6b17e8","Electivas"],
-      "Custom":["#6b17e8","Electivas"],
-      "FIS":["#fffa61","Física"],
-      "ANA":["#eb9c2d","Analítca"],
-      "INO":["#fcce8d","Inorgánica"],
-      "ORG":["#8ded73","Orgánica"],
-      "FIQ":["#86f1f3","Fisicoquímica"],
-      "BIQ":["#ea6df3","Bioquímica y complementos"],
-      "OPQ":["#abc71f","Optativas"]};
-
-// Generar abreviaturas por código
-const codigosAbrev = {};
-for (const semestre of Object.values(malla)) {
-  for (const [nombre, codigo] of semestre) {
-    codigosAbrev[codigo] = nombre.split(" ").map(p => p[0]).join("").toUpperCase();
-  }
-}
-
-let taken = new Set(JSON.parse(localStorage.getItem("takenCourses") || "[]"));
-
-function renderMalla() {
-  const grid = document.getElementById("grid");
-  grid.innerHTML = "";
-  let total = 0, aprobados = 0, contador = 1;
-  let semestreKeys = Object.keys(malla);
-  for (let i = 0; i < semestreKeys.length; i++) {
-    const key = semestreKeys[i];
-    const col = document.createElement("div");
-    col.className = "semestre";
-
-    if (i % 2 === 0) {
-      const anio = Math.floor(i / 2) + 1;
-      const anioLabel = document.createElement("div");
-      anioLabel.className = "etiqueta-anio";
-      anioLabel.textContent = "Año " + anio + " - Semestre " + (i + 1);
-      grid.appendChild(anioLabel);
+    for (const semestre of Object.values(malla)) {
+      for (const [nombre, codigo] of semestre) {
+        codigosAbrev[codigo] = nombre.split(" ").map(p => p[0]).join("").toUpperCase();
+      }
     }
 
-    for (const curso of malla[key]) {
-      const [nombre, codigo, creditos, _, cat, prereqs] = curso;
-      const isTaken = taken.has(codigo);
-      const canTake = prereqs.every(p => taken.has(p));
-      const box = document.createElement("div");
-      box.className = "materia" + (isTaken ? " taken" : "") + (!canTake && !isTaken ? " locked" : "");
-      box.style.background = categorias[cat]?.[0] || "#555";
+    let taken = new Set(JSON.parse(localStorage.getItem("takenCourses") || "[]"));
 
-      const abrevPrerreqs = prereqs.length ? prereqs.map(p => codigosAbrev[p] || p).join(", ") : "ninguno";
-      const tooltipText = `Materia ${nombre}, posee ${creditos} créditos y tiene como prerrequisitos a ${abrevPrerreqs}.`;
+    function renderMalla() {
+      const grid = document.getElementById("grid");
+      grid.innerHTML = "";
+      let total = 0, aprobados = 0, contador = 1;
+      let semestreKeys = Object.keys(malla);
+      for (let i = 0; i < semestreKeys.length; i++) {
+        const key = semestreKeys[i];
+        const col = document.createElement("div");
+        col.className = "semestre";
 
-      box.innerHTML = `
-        <div class='numero'>${contador}</div>
-        <div class='creditos'>${creditos} cr</div>
-        <div><strong>${nombre}</strong></div>
-        <div style='font-size:10px'>${codigo}</div>
-        <div class='tooltip'>${tooltipText}</div>`;
+        if (i % 2 === 0) {
+          const anio = Math.floor(i / 2) + 1;
+          const anioLabel = document.createElement("div");
+          anioLabel.className = "etiqueta-anio";
+          anioLabel.textContent = "Año " + anio + " - Semestre " + (i + 1);
+          grid.appendChild(anioLabel);
+        }
 
-      box.onclick = () => {
-        if (isTaken) taken.delete(codigo);
-        else if (canTake) taken.add(codigo);
-        localStorage.setItem("takenCourses", JSON.stringify([...taken]));
-        renderMalla();
-      };
+        for (const curso of malla[key]) {
+          const [nombre, codigo, creditos, _, cat, prereqs] = curso;
+          const isTaken = taken.has(codigo);
+          const canTake = prereqs.every(p => taken.has(p));
+          const box = document.createElement("div");
+          box.className = "materia" + (isTaken ? " taken" : "") + (!canTake && !isTaken ? " locked" : "");
+          box.style.background = categorias[cat]?.[0] || "#555";
 
-      total += parseInt(creditos);
-      if (isTaken) aprobados += parseInt(creditos);
-      col.appendChild(box);
-      contador++;
+          const abrevPrerreqs = prereqs.length ? prereqs.map(p => codigosAbrev[p] || p).join(", ") : "ninguno";
+          const tooltipText = `Materia ${nombre}, posee ${creditos} créditos y tiene como prerrequisitos a ${abrevPrerreqs}.`;
+
+          box.innerHTML = `
+            <div class='numero'>${contador}</div>
+            <div class='creditos'>${creditos} cr</div>
+            <div><strong>${nombre}</strong></div>
+            <div style='font-size:10px'>${codigo}</div>
+            <div class='tooltip'>${tooltipText}</div>`;
+
+          box.onclick = () => {
+            if (isTaken) taken.delete(codigo);
+            else if (canTake) taken.add(codigo);
+            localStorage.setItem("takenCourses", JSON.stringify([...taken]));
+            renderMalla();
+          };
+
+          total += parseInt(creditos);
+          if (isTaken) aprobados += parseInt(creditos);
+          col.appendChild(box);
+          contador++;
+        }
+
+        grid.appendChild(col);
+      }
+
+      renderLeyenda();
+      renderProgreso(aprobados, total);
     }
 
-    grid.appendChild(col);
-  }
+    function renderLeyenda() {
+      const leyenda = document.getElementById("leyenda");
+      leyenda.innerHTML = "";
+      for (const cat in categorias) {
+        const span = document.createElement("span");
+        span.innerHTML = `<span class='color-box' style='background:${categorias[cat][0]}'></span> ${categorias[cat][1]}`;
+        leyenda.appendChild(span);
+      }
+    }
 
-  renderLeyenda();
-  renderProgreso(aprobados, total);
-}
+    function renderProgreso(hecho, total) {
+      const p = document.getElementById("progreso");
+      const porcentaje = total ? Math.round((hecho / total) * 100) : 0;
+      p.innerText = `Créditos aprobados: ${hecho} / ${total} (${porcentaje}%)`;
+    }
 
-function renderLeyenda() {
-  const leyenda = document.getElementById("leyenda");
-  leyenda.innerHTML = "";
-  for (const cat in categorias) {
-    const span = document.createElement("span");
-    span.innerHTML = `<span class='color-box' style='background:${categorias[cat][0]}'></span> ${categorias[cat][1]}`;
-    leyenda.appendChild(span);
-  }
-}
+    function limpiarMalla() {
+      taken = new Set();
+      localStorage.setItem("takenCourses", "[]");
+      renderMalla();
+    }
 
-function renderProgreso(hecho, total) {
-  const p = document.getElementById("progreso");
-  const porcentaje = total ? Math.round((hecho / total) * 100) : 0;
-  p.innerText = `Créditos aprobados: ${hecho} / ${total} (${porcentaje}%)`;
-}
-
-function limpiarMalla() {
-  taken = new Set();
-  localStorage.setItem("takenCourses", "[]");
-  renderMalla();
-}
-
-renderMalla();
-</script>
+    renderMalla();
+  </script>
 </body>
 </html>
