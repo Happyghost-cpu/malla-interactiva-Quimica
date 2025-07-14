@@ -4,51 +4,136 @@
   <meta charset="UTF-8">
   <title>Carrera de química pura UNIVALLE</title>
   <style>
-    body { font-family: sans-serif; background: #202124; color: #fff; margin: 0; }
-    header { background: #111; padding: 20px; text-align: center; font-size: 24px; font-weight: bold; }
-    .instrucciones { background: #333; padding: 10px 20px; margin: 10px 20px; border-radius: 5px; font-size: 14px; }
-    .controls { display: flex; justify-content: center; margin: 15px; }
-    .controls button { background: #c62828; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; }
-    .grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 10px; padding: 0 20px; }
-    .semestre { display: flex; flex-direction: column; gap: 8px; position: relative; }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #fdeef8;
+      color: #333;
+    }
+
+    header {
+      text-align: center;
+      padding: 30px;
+      font-size: 26px;
+      font-weight: bold;
+      color: #a0006b;
+    }
+
+    .instrucciones {
+      max-width: 800px;
+      margin: 0 auto 20px auto;
+      background: #fff0fa;
+      border: 1px solid #ffb6d9;
+      border-radius: 10px;
+      padding: 15px;
+      font-size: 14px;
+      color: #444;
+    }
+
+    .controls {
+      text-align: center;
+      margin: 20px;
+    }
+
+    .controls button {
+      background-color: #e5397d;
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      font-size: 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .grid {
+      display: flex;
+      overflow-x: auto;
+      padding: 0 20px 40px 20px;
+      gap: 30px;
+    }
+
+    .semestre {
+      background: #ffe3f1;
+      border-radius: 15px;
+      padding: 15px;
+      min-width: 200px;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+      flex-shrink: 0;
+    }
+
+    .semestre h3 {
+      text-align: center;
+      color: #c2185b;
+      font-size: 16px;
+      margin-bottom: 10px;
+      border-bottom: 2px dashed #f8bbd0;
+      padding-bottom: 5px;
+    }
+
     .materia {
-      background: #444; color: #fff; border-radius: 5px; padding: 20px 10px 10px 10px;
-      border: 2px solid #fff; position: relative; font-size: 12px; min-height: 60px;
-      cursor: pointer; overflow: hidden;
+      background: #e0bbf4;
+      margin: 6px 0;
+      border-radius: 8px;
+      padding: 12px 10px;
+      font-size: 13px;
+      font-weight: bold;
+      text-align: center;
+      position: relative;
+      cursor: pointer;
+      box-shadow: inset 0 0 0 2px #c084d2;
+      transition: all 0.2s ease;
     }
+
+    .materia:hover {
+      background: #d3aaf2;
+    }
+
     .materia.taken::after {
-      content: ""; position: absolute; top: 0; left: 0;
-      width: 141%; height: 4px; background: red;
-      transform: rotate(-45deg); transform-origin: left top; z-index: 10;
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 140%;
+      height: 4px;
+      background: red;
+      transform: rotate(-45deg);
+      transform-origin: left top;
+      z-index: 10;
     }
-    .materia.locked { opacity: 0.3; pointer-events: none; }
-    .materia .numero {
-      position: absolute; top: 5px; left: 5px; background: #111; color: #fff;
-      border-radius: 50%; padding: 2px 6px; font-size: 10px; z-index: 2;
+
+    .materia.locked {
+      opacity: 0.4;
+      pointer-events: none;
     }
-    .materia .creditos {
-      position: absolute; top: 5px; right: 5px; background: #000; color: #fff;
-      padding: 2px 5px; border-radius: 3px; font-size: 10px; z-index: 2;
+
+    .tooltip {
+      visibility: hidden;
+      width: 220px;
+      background-color: #4a148c;
+      color: #fff;
+      text-align: center;
+      border-radius: 8px;
+      padding: 8px;
+      position: absolute;
+      z-index: 1000;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 13px;
+      box-shadow: 0px 2px 5px rgba(0,0,0,0.2);
+      white-space: normal;
     }
-    .materia .tooltip {
-      visibility: hidden; background-color: #333; color: #fff; text-align: center;
-      padding: 5px; border-radius: 5px; position: absolute; z-index: 999;
-      bottom: -45px; left: 50%; transform: translateX(-50%); font-size: 11px;
-      white-space: pre-line;
+
+    .materia:hover .tooltip {
+      visibility: visible;
     }
-    .materia:hover .tooltip { visibility: visible; }
-    .leyenda {
-      display: flex; flex-wrap: wrap; justify-content: center;
-      gap: 15px; margin-top: 30px; font-size: 13px;
-    }
-    .leyenda span {
-      display: flex; align-items: center; gap: 5px;
-    }
-    .color-box {
-      width: 15px; height: 15px; border-radius: 3px; display: inline-block;
-    }
+
     .progreso {
-      text-align: center; margin: 20px; font-size: 14px;
+      text-align: center;
+      margin: 20px;
+      font-size: 15px;
+      color: #555;
     }
   </style>
 </head>
@@ -57,8 +142,9 @@
 
   <div class="instrucciones">
     <strong>¿Cómo usar esta malla?</strong><br>
-    Haz clic sobre las materias que ya cursaste. Estas se tacharán con una línea diagonal roja.<br>
-    Las materias con prerrequisitos se desbloquean automáticamente. Puedes reiniciar tu progreso con el botón.
+    Haz clic sobre las materias que ya cursaste. Se tacharán con una línea diagonal roja.<br>
+    Las materias con prerrequisitos se desbloquean automáticamente.<br>
+    Puedes reiniciar tu progreso con el botón de abajo.
   </div>
 
   <div class="controls">
@@ -66,11 +152,11 @@
   </div>
 
   <div class="grid" id="grid"></div>
-  <div class="leyenda" id="leyenda"></div>
-  <div class="progreso" id="progreso"></div>
 
+  <div class="progreso" id="progreso"></div>
   <script>
-    const malla = { "s1": [
+    const malla = { 
+      "s1": [
           ["Introducción a las ciencias naturales","ICN-116009C","4",0,"PC",[],""],
           ["Introducción a la experimentación científica","IEC-106002C","3",0,"PC",[],""],
           ["Matemática fundamental","MF-111001C","4",0,"MAT",[],""],
@@ -157,7 +243,6 @@
       "BIQ":["#ea6df3","Bioquímica y complementos"],
       "OPQ":["#abc71f","Optativas"]};
 
-    // Generar abreviaturas automáticamente
     const codigosAbrev = {};
     for (const semestre of Object.values(malla)) {
       for (const [nombre, codigo] of semestre) {
@@ -170,67 +255,53 @@
     function renderMalla() {
       const grid = document.getElementById("grid");
       grid.innerHTML = "";
-      let total = 0, aprobados = 0, contador = 1;
-      const semestreKeys = Object.keys(malla);
+      let total = 0, aprobados = 0;
+      let contador = 1;
 
-      for (let i = 0; i < semestreKeys.length; i++) {
-        const key = semestreKeys[i];
-        const col = document.createElement("div");
-        col.className = "semestre";
+      const keys = Object.keys(malla);
+      for (let i = 0; i < keys.length; i++) {
+        const key = keys[i];
+        const semestreBox = document.createElement("div");
+        semestreBox.className = "semestre";
+
+        const h = document.createElement("h3");
+        h.textContent = `${i + 1}° semestre`;
+        semestreBox.appendChild(h);
 
         for (const curso of malla[key]) {
           const [nombre, codigo, creditos, _, cat, prereqs] = curso;
           const isTaken = taken.has(codigo);
           const canTake = prereqs.every(p => taken.has(p));
-          const box = document.createElement("div");
+          const materiaDiv = document.createElement("div");
 
-          box.className = "materia" +
-            (isTaken ? " taken" : "") +
-            (!canTake && !isTaken ? " locked" : "");
-          box.style.background = categorias[cat]?.[0] || "#555";
+          materiaDiv.className = "materia" + (isTaken ? " taken" : "") + (!canTake && !isTaken ? " locked" : "");
+          materiaDiv.style.background = categorias[cat]?.[0] || "#e0bbf4";
 
-          const abrevPrerreqs = prereqs.length
-            ? prereqs.map(p => codigosAbrev[p] || p).join(", ")
-            : "ninguno";
+          const abrevPrerreqs = prereqs.length ? prereqs.map(p => codigosAbrev[p] || p).join(", ") : "ninguno";
+          const tooltipText = `Materia ${nombre}\nCréditos: ${creditos}\nPrerrequisitos: ${abrevPrerreqs}`;
 
-          const tooltipText =
-            `Materia ${nombre}, posee ${creditos} créditos\nPrerrequisitos: ${abrevPrerreqs}`;
+          materiaDiv.innerHTML = `
+            ${nombre}
+            <div class="tooltip">${tooltipText}</div>
+          `;
 
-          box.innerHTML = `
-            <div class='numero'>${contador}</div>
-            <div class='creditos'>${creditos} cr</div>
-            <div><strong>${nombre}</strong></div>
-            <div style='font-size:10px'>${codigo}</div>
-            <div class='tooltip'>${tooltipText}</div>`;
-
-          box.onclick = () => {
+          materiaDiv.onclick = () => {
             if (isTaken) taken.delete(codigo);
             else if (canTake) taken.add(codigo);
             localStorage.setItem("takenCourses", JSON.stringify([...taken]));
             renderMalla();
           };
 
-          total += parseInt(creditos);
           if (isTaken) aprobados += parseInt(creditos);
-          col.appendChild(box);
+          total += parseInt(creditos);
+          semestreBox.appendChild(materiaDiv);
           contador++;
         }
 
-        grid.appendChild(col);
+        grid.appendChild(semestreBox);
       }
 
-      renderLeyenda();
       renderProgreso(aprobados, total);
-    }
-
-    function renderLeyenda() {
-      const leyenda = document.getElementById("leyenda");
-      leyenda.innerHTML = "";
-      for (const cat in categorias) {
-        const span = document.createElement("span");
-        span.innerHTML = `<span class='color-box' style='background:${categorias[cat][0]}'></span> ${categorias[cat][1]}`;
-        leyenda.appendChild(span);
-      }
     }
 
     function renderProgreso(hecho, total) {
