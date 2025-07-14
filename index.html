@@ -192,7 +192,7 @@
           ["Física fundamental I","FF1-106001C","4","4","FIS",["ICN-116009C","IEC-106002C","CAL1-111013C"],""],
           ["Biología general","BIO-102052C","4","4","PC",["ICN-116009C","IEC-106002C"],""],
           ["Cálculo I\t","CAL1-111013C","3","3","MAT",["MF-111001C"],""],
-          ["Química general\t","QG-116013C","4","4","PC",[],""],
+          ["Química general\t","QG-116013C","4","4","PC",["ICN-116009C","IEC-106002C","MF-111001C"],""],
           ["Inglés II","ELEC-ENG2","2","2","ELE",["ELEC-ENG"],""]
       ],
       "s3": [
@@ -326,6 +326,7 @@
     const grid = document.getElementById("grid");
     grid.innerHTML = "";
     let total = 0, aprobados = 0;
+    let contador = 1;
 
     const keys = Object.keys(malla);
     for (let i = 0; i < keys.length; i++) {
@@ -357,11 +358,21 @@
         const tooltipText = `Materia: ${nombre}\nCréditos: ${creditos}\nPrerrequisitos: ${abrevPrerreqs}`;
 
         materiaDiv.innerHTML = `
-          ${nombre}
+          <div style="position: absolute; top: 4px; left: 6px; font-size: 10px; font-weight: bold; background: rgba(0,0,0,0.2); padding: 2px 5px; border-radius: 4px; color: white;">
+            ${codigo}
+          </div>
+          <div style="position: absolute; top: 4px; right: 6px; font-size: 10px; font-weight: bold; background: white; color: black; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+            ${contador}
+          </div>
+          <div style="margin-top: 18px; margin-bottom: 18px;">
+            ${nombre}
+          </div>
+          <div style="position: absolute; bottom: 4px; right: 6px; font-size: 11px; font-weight: bold; background: white; padding: 2px 6px; border-radius: 3px; color: black;">
+            ${creditos}
+          </div>
           <div class="tooltip">${tooltipText}</div>
         `;
-
-        // ⚠️ Siempre se puede hacer clic, sin importar desbloqueo visual
+        
         materiaDiv.onclick = () => {
           if (isTaken) taken.delete(codigo);
           else taken.add(codigo);
@@ -372,6 +383,7 @@
         total += parseInt(creditos);
         if (isTaken) aprobados += parseInt(creditos);
         semestreBox.appendChild(materiaDiv);
+        contador++;
       }
 
       grid.appendChild(semestreBox);
