@@ -89,6 +89,11 @@
       background: #90caf9;
     }
 
+    .materia.taken {
+      background: #cccccc !important;
+      opacity: 0.4;
+    }
+
     .materia.taken::after {
       content: "";
       position: absolute;
@@ -101,8 +106,9 @@
       pointer-events: none;
     }
 
-    .materia.taken {
+    .materia.locked {
       opacity: 0.4;
+      pointer-events: none;
     }
 
     .tooltip {
@@ -141,6 +147,7 @@
   <div class="instrucciones">
     <strong>¿Cómo usar esta malla?</strong><br>
     Haz clic sobre las materias que ya cursaste. Se tacharán con una línea diagonal roja.<br>
+    Las materias con prerrequisitos se desbloquean automáticamente.<br>
     Puedes marcar cualquier materia, incluso si no está desbloqueada (por homologación).<br>
     Usa el botón para reiniciar tu progreso.
   </div>
@@ -269,12 +276,18 @@
         for (const curso of malla[key]) {
           const [nombre, codigo, creditos, _, cat, prereqs] = curso;
           const isTaken = taken.has(codigo);
-
+          const canTake = prereqs.every(p => taken.has(p));
           const materiaDiv = document.createElement("div");
-          materiaDiv.className = "materia" + (isTaken ? " taken" : "");
-          materiaDiv.style.background = categorias[cat]?.[0] || "#bbdefb";
 
-          const abrevPrerreqs = prereqs.length ? prereqs.map(p => codigosAbrev[p] || p).join(", ") : "ninguno";
+          materiaDiv.className = "materia" +
+            (isTaken ? " taken" : "") +
+            (!canTake && !isTaken ? " locked" : "");
+          materiaDiv.style.background = isTaken ? "#cccccc" : (categorias[cat]?.[0] || "#bbdefb");
+
+          const abrevPrerreqs = prereqs.length
+            ? prereqs.map(p => codigosAbrev[p] || p).join(", ")
+            : "ninguno";
+
           const tooltipText = `Materia: ${nombre}\nCréditos: ${creditos}\nPrerrequisitos: ${abrevPrerreqs}`;
 
           materiaDiv.innerHTML = `
@@ -289,8 +302,8 @@
             renderMalla();
           };
 
-          if (isTaken) aprobados += parseInt(creditos);
           total += parseInt(creditos);
+          if (isTaken) aprobados += parseInt(creditos);
           semestreBox.appendChild(materiaDiv);
           contador++;
         }
