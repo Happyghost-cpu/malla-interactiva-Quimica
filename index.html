@@ -1,176 +1,76 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Carrera de química pura UNIVALLE</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #1e1e1e;
-      color: white;
-      margin: 0;
-      padding: 0;
-    }
-
-    header {
-      background-color: #111;
-      padding: 20px;
-      text-align: center;
-      font-size: 24px;
-      font-weight: bold;
-    }
-
-    .controls {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin: 20px 0;
-    }
-
-    .controls button {
-      background-color: #333;
-      color: white;
-      border: none;
-      padding: 10px 15px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      gap: 10px;
-      padding: 10px 20px;
-    }
-
-    .semestre {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
+    body { font-family: sans-serif; background: #202124; color: #fff; margin: 0; }
+    header { background: #111; padding: 20px; text-align: center; font-size: 24px; font-weight: bold; }
+    .instrucciones { background: #333; padding: 10px 20px; margin: 10px 20px; border-radius: 5px; font-size: 14px; }
+    .controls { display: flex; justify-content: center; margin: 15px; }
+    .controls button { background: #c62828; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; }
+    .grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 10px; padding: 0 20px; }
+    .semestre { display: flex; flex-direction: column; gap: 8px; position: relative; }
     .materia {
-      position: relative;
-      background-color: #2c2c2c;
-      color: white;
-      padding: 15px;
-      border-radius: 8px;
-      font-size: 13px;
-      border: 2px solid #555;
-      cursor: pointer;
-      overflow: hidden;
+      background: #444; color: #fff; border-radius: 5px; padding: 20px 10px 10px 10px;
+      border: 2px solid #fff; position: relative; font-size: 12px; min-height: 60px;
+      cursor: pointer; overflow: hidden;
     }
-
     .materia.taken::after {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 150%;
-      height: 4px;
-      background: red;
-      transform: rotate(-45deg);
-      transform-origin: left top;
-      z-index: 10;
+      content: ""; position: absolute; top: 0; left: 0;
+      width: 141%; height: 4px; background: red;
+      transform: rotate(-45deg); transform-origin: left top; z-index: 10;
     }
-
-    .materia.locked {
-      opacity: 0.3;
-      pointer-events: none;
-    }
-
+    .materia.locked { opacity: 0.3; pointer-events: none; }
     .materia .numero {
-      position: absolute;
-      top: 5px;
-      left: 5px;
-      background: #111;
-      color: #fff;
-      border-radius: 50%;
-      padding: 2px 6px;
-      font-size: 10px;
-      z-index: 2;
+      position: absolute; top: 5px; left: 5px; background: #111; color: #fff;
+      border-radius: 50%; padding: 2px 6px; font-size: 10px; z-index: 2;
     }
-
     .materia .creditos {
-      position: absolute;
-      top: 5px;
-      right: 5px;
-      background: #000;
-      color: #fff;
-      padding: 2px 5px;
-      border-radius: 3px;
-      font-size: 10px;
-      z-index: 2;
+      position: absolute; top: 5px; right: 5px; background: #000; color: #fff;
+      padding: 2px 5px; border-radius: 3px; font-size: 10px; z-index: 2;
     }
-
     .materia .tooltip {
-      visibility: hidden;
-      background-color: #444;
-      color: #fff;
-      text-align: center;
-      padding: 5px;
-      border-radius: 5px;
-      position: absolute;
-      z-index: 999;
-      bottom: -40px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 11px;
+      visibility: hidden; background-color: #333; color: #fff; text-align: center;
+      padding: 5px; border-radius: 5px; position: absolute; z-index: 999;
+      bottom: -45px; left: 50%; transform: translateX(-50%); font-size: 11px;
       white-space: pre-line;
     }
-
-    .materia:hover .tooltip {
-      visibility: visible;
-    }
-
+    .materia:hover .tooltip { visibility: visible; }
     .leyenda {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
-      margin-top: 30px;
-      font-size: 13px;
+      display: flex; flex-wrap: wrap; justify-content: center;
+      gap: 15px; margin-top: 30px; font-size: 13px;
     }
-
     .leyenda span {
-      display: flex;
-      align-items: center;
-      gap: 5px;
+      display: flex; align-items: center; gap: 5px;
     }
-
     .color-box {
-      width: 15px;
-      height: 15px;
-      border-radius: 3px;
-      display: inline-block;
+      width: 15px; height: 15px; border-radius: 3px; display: inline-block;
     }
-
     .progreso {
-      text-align: center;
-      margin: 20px;
-      font-size: 14px;
+      text-align: center; margin: 20px; font-size: 14px;
     }
   </style>
 </head>
 <body>
   <header>Carrera de química pura UNIVALLE</header>
 
-  <div class="controls">
-    <button onclick="limpiarMalla()">Limpiar ramos aprobados</button>
+  <div class="instrucciones">
+    <strong>¿Cómo usar esta malla?</strong><br>
+    Haz clic sobre las materias que ya cursaste. Estas se tacharán con una línea diagonal roja.<br>
+    Las materias con prerrequisitos se desbloquean automáticamente. Puedes reiniciar tu progreso con el botón.
   </div>
 
-  <div class="instrucciones" style="padding: 10px 20px; background: #333; margin: 0 20px 20px; border-radius: 6px; font-size: 13px;">
-    <strong>¿Cómo usar esta malla?</strong><br>
-    Haz clic sobre las materias que ya cursaste. Se tacharán con una línea diagonal roja como en el ejemplo.<br>
-    Las materias con prerrequisitos se desbloquean automáticamente. Puedes reiniciar tu progreso con el botón.
+  <div class="controls">
+    <button onclick="limpiarMalla()">Limpiar ramos aprobados</button>
   </div>
 
   <div class="grid" id="grid"></div>
   <div class="leyenda" id="leyenda"></div>
   <div class="progreso" id="progreso"></div>
+
   <script>
-    const malla = {
-      "s1": [
+    const malla = { "s1": [
           ["Introducción a las ciencias naturales","ICN-116009C","4",0,"PC",[],""],
           ["Introducción a la experimentación científica","IEC-106002C","3",0,"PC",[],""],
           ["Matemática fundamental","MF-111001C","4",0,"MAT",[],""],
@@ -257,6 +157,7 @@
       "BIQ":["#ea6df3","Bioquímica y complementos"],
       "OPQ":["#abc71f","Optativas"]};
 
+    // Generar abreviaturas automáticamente
     const codigosAbrev = {};
     for (const semestre of Object.values(malla)) {
       for (const [nombre, codigo] of semestre) {
@@ -327,8 +228,7 @@
       leyenda.innerHTML = "";
       for (const cat in categorias) {
         const span = document.createElement("span");
-        span.innerHTML = `
-          <span class='color-box' style='background:${categorias[cat][0]}'></span> ${categorias[cat][1]}`;
+        span.innerHTML = `<span class='color-box' style='background:${categorias[cat][0]}'></span> ${categorias[cat][1]}`;
         leyenda.appendChild(span);
       }
     }
