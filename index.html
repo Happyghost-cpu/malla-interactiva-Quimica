@@ -357,6 +357,24 @@
 
         const tooltipText = `Materia: ${nombre}\nCréditos: ${creditos}\nPrerrequisitos: ${abrevPrerreqs}`;
 
+        const prereqCircles = prereqs.map(p => {
+          const index = Object.values(malla).flat().findIndex(c => c[1] === p);
+          const order = index + 1;
+          const color = categorias[Object.values(malla).flat().find(c => c[1] === p)?.[4]]?.[0] || "#999";
+          return `<div style="
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            width:20px;
+            height:20px;
+            margin-right:3px;
+            border-radius:50%;
+            background:${color};
+            color:white;
+            font-size:11px;
+            font-weight:bold;">${order}</div>`;
+        }).join("");
+        
         materiaDiv.innerHTML = `
           <div style="position: absolute; top: 4px; left: 6px; font-size: 10px; font-weight: bold; background: rgba(0,0,0,0.2); padding: 2px 5px; border-radius: 4px; color: white;">
             ${codigo}
@@ -367,12 +385,16 @@
           <div style="margin-top: 18px; margin-bottom: 18px;">
             ${nombre}
           </div>
+          ${prereqs.length > 0 ? `
+          <div style="position: absolute; bottom: 4px; left: 6px; display: flex;">
+            ${prereqCircles}
+          </div>` : ""}
           <div style="position: absolute; bottom: 4px; right: 6px; font-size: 11px; font-weight: bold; background: white; padding: 2px 6px; border-radius: 3px; color: black;">
             ${creditos}
           </div>
           <div class="tooltip">${tooltipText}</div>
         `;
-        
+
         materiaDiv.onclick = () => {
           if (isTaken) taken.delete(codigo);
           else taken.add(codigo);
