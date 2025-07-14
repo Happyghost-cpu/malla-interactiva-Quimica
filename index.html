@@ -106,11 +106,6 @@
       pointer-events: none;
     }
 
-    .materia.locked {
-      opacity: 0.4;
-      pointer-events: none;
-    }
-
     .tooltip {
       visibility: hidden;
       width: 220px;
@@ -131,6 +126,29 @@
 
     .materia:hover .tooltip {
       visibility: visible;
+    }
+
+    .leyenda {
+      text-align: center;
+      margin-top: 30px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      font-size: 13px;
+    }
+
+    .leyenda span {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .color-box {
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      display: inline-block;
     }
 
     .progreso {
@@ -157,9 +175,11 @@
   </div>
 
   <div class="grid" id="grid"></div>
+  <div class="leyenda" id="leyenda"></div>
   <div class="progreso" id="progreso"></div>
 
   <script>
+    // ⬇️ Pega tu ICQ.json real aquí
     const malla = { 
       "s1": [
           ["Introducción a las ciencias naturales","ICN-116009C","4",0,"PC",[],""],
@@ -279,10 +299,12 @@
           const canTake = prereqs.every(p => taken.has(p));
           const materiaDiv = document.createElement("div");
 
-          materiaDiv.className = "materia" +
-            (isTaken ? " taken" : "") +
-            (!canTake && !isTaken ? " locked" : "");
-          materiaDiv.style.background = isTaken ? "#cccccc" : (categorias[cat]?.[0] || "#bbdefb");
+          materiaDiv.className = "materia" + (isTaken ? " taken" : "");
+          if (!canTake && !isTaken) materiaDiv.classList.add("locked");
+
+          materiaDiv.style.background = isTaken
+            ? "#cccccc"
+            : categorias[cat]?.[0] || "#bbdefb";
 
           const abrevPrerreqs = prereqs.length
             ? prereqs.map(p => codigosAbrev[p] || p).join(", ")
@@ -311,7 +333,19 @@
         grid.appendChild(semestreBox);
       }
 
+      renderLeyenda();
       renderProgreso(aprobados, total);
+    }
+
+    function renderLeyenda() {
+      const leyenda = document.getElementById("leyenda");
+      leyenda.innerHTML = "";
+      for (const clave in categorias) {
+        const [color, nombre] = categorias[clave];
+        const span = document.createElement("span");
+        span.innerHTML = `<span class="color-box" style="background:${color}"></span> ${nombre}`;
+        leyenda.appendChild(span);
+      }
     }
 
     function renderProgreso(hecho, total) {
