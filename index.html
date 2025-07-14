@@ -177,10 +177,9 @@
   <div class="grid" id="grid"></div>
   <div class="leyenda" id="leyenda"></div>
   <div class="progreso" id="progreso"></div>
-
-  <script>
-    // ⬇️ Pega tu ICQ.json real aquí
-    const malla = { 
+<script>
+  // ⬇️ Pega tu ICQ.json real aquí
+  const malla = { 
       "s1": [
           ["Introducción a las ciencias naturales","ICN-116009C","4",0,"PC",[],""],
           ["Introducción a la experimentación científica","IEC-106002C","3",0,"PC",[],""],
@@ -255,7 +254,7 @@
       "s10": [
           ["Trabajo de grado II","TG2-116084M","7","7","PC",["TG1-116083M"],""]
       ]};
-    const categorias = {
+  const categorias = {
       "PC":["#949494","Plan Común"],
       "MAT":["#0091ff","Matemáticas"],
       "ELE":["#6b17e8","Electivas"],
@@ -267,100 +266,99 @@
       "FIQ":["#86f1f3","Fisicoquímica"],
       "BIQ":["#ea6df3","Bioquímica y complementos"],
       "OPQ":["#abc71f","Optativas"]};
-
-    const codigosAbrev = {};
-    for (const semestre of Object.values(malla)) {
-      for (const [nombre, codigo] of semestre) {
-        codigosAbrev[codigo] = nombre.split(" ").map(p => p[0]).join("").toUpperCase();
-      }
+  
+  const codigosAbrev = {};
+  for (const semestre of Object.values(malla)) {
+    for (const [nombre, codigo] of semestre) {
+      codigosAbrev[codigo] = nombre.split(" ").map(p => p[0]).join("").toUpperCase();
     }
+  }
 
-    let taken = new Set(JSON.parse(localStorage.getItem("takenCourses") || "[]"));
+  let taken = new Set(JSON.parse(localStorage.getItem("takenCourses") || "[]"));
 
-    function renderMalla() {
-      const grid = document.getElementById("grid");
-      grid.innerHTML = "";
-      let total = 0, aprobados = 0;
-      let contador = 1;
+  function renderMalla() {
+    const grid = document.getElementById("grid");
+    grid.innerHTML = "";
+    let total = 0, aprobados = 0;
 
-      const keys = Object.keys(malla);
-      for (let i = 0; i < keys.length; i++) {
-        const key = keys[i];
-        const semestreBox = document.createElement("div");
-        semestreBox.className = "semestre";
+    const keys = Object.keys(malla);
+    for (let i = 0; i < keys.length; i++) {
+      const key = keys[i];
+      const semestreBox = document.createElement("div");
+      semestreBox.className = "semestre";
 
-        const h = document.createElement("h3");
-        h.textContent = `${i + 1}° semestre`;
-        semestreBox.appendChild(h);
+      const h = document.createElement("h3");
+      h.textContent = `${i + 1}° semestre`;
+      semestreBox.appendChild(h);
 
-        for (const curso of malla[key]) {
-          const [nombre, codigo, creditos, _, cat, prereqs] = curso;
-          const isTaken = taken.has(codigo);
-          const canTake = prereqs.every(p => taken.has(p));
-          const materiaDiv = document.createElement("div");
+      for (const curso of malla[key]) {
+        const [nombre, codigo, creditos, _, cat, prereqs] = curso;
+        const isTaken = taken.has(codigo);
+        const canTake = prereqs.every(p => taken.has(p));
 
-          materiaDiv.className = "materia" + (isTaken ? " taken" : "");
-          if (!canTake && !isTaken) materiaDiv.classList.add("locked");
+        const materiaDiv = document.createElement("div");
+        materiaDiv.className = "materia" + (isTaken ? " taken" : "");
+        if (!canTake && !isTaken) materiaDiv.style.opacity = 0.4;
 
-          materiaDiv.style.background = isTaken
-            ? "#cccccc"
-            : categorias[cat]?.[0] || "#bbdefb";
+        materiaDiv.style.background = isTaken
+          ? "#cccccc"
+          : categorias[cat]?.[0] || "#bbdefb";
 
-          const abrevPrerreqs = prereqs.length
-            ? prereqs.map(p => codigosAbrev[p] || p).join(", ")
-            : "ninguno";
+        const abrevPrerreqs = prereqs.length
+          ? prereqs.map(p => codigosAbrev[p] || p).join(", ")
+          : "ninguno";
 
-          const tooltipText = `Materia: ${nombre}\nCréditos: ${creditos}\nPrerrequisitos: ${abrevPrerreqs}`;
+        const tooltipText = `Materia: ${nombre}\nCréditos: ${creditos}\nPrerrequisitos: ${abrevPrerreqs}`;
 
-          materiaDiv.innerHTML = `
-            ${nombre}
-            <div class="tooltip">${tooltipText}</div>
-          `;
+        materiaDiv.innerHTML = `
+          ${nombre}
+          <div class="tooltip">${tooltipText}</div>
+        `;
 
-          materiaDiv.onclick = () => {
-            if (isTaken) taken.delete(codigo);
-            else taken.add(codigo);
-            localStorage.setItem("takenCourses", JSON.stringify([...taken]));
-            renderMalla();
-          };
+        // ⚠️ Siempre se puede hacer clic, sin importar desbloqueo visual
+        materiaDiv.onclick = () => {
+          if (isTaken) taken.delete(codigo);
+          else taken.add(codigo);
+          localStorage.setItem("takenCourses", JSON.stringify([...taken]));
+          renderMalla();
+        };
 
-          total += parseInt(creditos);
-          if (isTaken) aprobados += parseInt(creditos);
-          semestreBox.appendChild(materiaDiv);
-          contador++;
-        }
-
-        grid.appendChild(semestreBox);
+        total += parseInt(creditos);
+        if (isTaken) aprobados += parseInt(creditos);
+        semestreBox.appendChild(materiaDiv);
       }
 
-      renderLeyenda();
-      renderProgreso(aprobados, total);
+      grid.appendChild(semestreBox);
     }
 
-    function renderLeyenda() {
-      const leyenda = document.getElementById("leyenda");
-      leyenda.innerHTML = "";
-      for (const clave in categorias) {
-        const [color, nombre] = categorias[clave];
-        const span = document.createElement("span");
-        span.innerHTML = `<span class="color-box" style="background:${color}"></span> ${nombre}`;
-        leyenda.appendChild(span);
-      }
-    }
+    renderLeyenda();
+    renderProgreso(aprobados, total);
+  }
 
-    function renderProgreso(hecho, total) {
-      const p = document.getElementById("progreso");
-      const porcentaje = total ? Math.round((hecho / total) * 100) : 0;
-      p.innerText = `Créditos aprobados: ${hecho} / ${total} (${porcentaje}%)`;
+  function renderLeyenda() {
+    const leyenda = document.getElementById("leyenda");
+    leyenda.innerHTML = "";
+    for (const clave in categorias) {
+      const [color, nombre] = categorias[clave];
+      const span = document.createElement("span");
+      span.innerHTML = `<span class="color-box" style="background:${color}"></span> ${nombre}`;
+      leyenda.appendChild(span);
     }
+  }
 
-    function limpiarMalla() {
-      taken = new Set();
-      localStorage.setItem("takenCourses", "[]");
-      renderMalla();
-    }
+  function renderProgreso(hecho, total) {
+    const p = document.getElementById("progreso");
+    const porcentaje = total ? Math.round((hecho / total) * 100) : 0;
+    p.innerText = `Créditos aprobados: ${hecho} / ${total} (${porcentaje}%)`;
+  }
 
+  function limpiarMalla() {
+    taken = new Set();
+    localStorage.setItem("takenCourses", "[]");
     renderMalla();
-  </script>
+  }
+
+  renderMalla();
+</script>
 </body>
 </html>
